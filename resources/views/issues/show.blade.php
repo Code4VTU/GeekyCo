@@ -31,40 +31,23 @@
 
                 <!-- Comments -->
                 <section class="comments">
-                    <h4>Comments <span class="comments-amount">(4)</span></h4>
+                    <h4>Коментари <span class="comments-amount">({{ count($issue->comments) }})</span></h4>
 
                     <ul>
-                        <li>
-                            <div class="avatar"><img
-                                        src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=70"
-                                        alt=""/></div>
-                            <div class="comment-content">
-                                <div class="arrow-comment"></div>
-                                <div class="comment-by">Kathy Brown<span class="date">12th, June 2015</span>
-                                    <a href="#" class="reply"><i class="fa fa-reply"></i> Reply</a>
+                        @foreach($issue->comments as $comment)
+                            <li>
+                                <div class="avatar"><img
+                                            src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=70"
+                                            alt=""/></div>
+                                <div class="comment-content">
+                                    <div class="arrow-comment"></div>
+                                    <div class="comment-by">{{ $comment->user->name }}<span class="date">{{ $comment->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <p>{{ $comment->body }}</p>
                                 </div>
-                                <p>Morbi velit eros, sagittis in facilisis non, rhoncus et erat. Nam posuere tristique
-                                    sem,
-                                    eu ultricies tortor imperdiet vitae. Curabitur lacinia neque non metus</p>
-                            </div>
-                        </li>
 
-                        <li>
-                            <div class="avatar"><img
-                                        src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=70"
-                                        alt=""/></div>
-                            <div class="comment-content">
-                                <div class="arrow-comment"></div>
-                                <div class="comment-by">John Doe<span class="date">15th, May 2015</span>
-                                    <a href="#" class="reply"><i class="fa fa-reply"></i> Reply</a>
-                                </div>
-                                <p>Commodo est luctus eget. Proin in nunc laoreet justo volutpat blandit enim. Sem
-                                    felis,
-                                    ullamcorper vel aliquam non, varius eget justo. Duis quis nunc tellus sollicitudin
-                                    mauris.</p>
-                            </div>
-
-                        </li>
+                            </li>
+                        @endforeach
                     </ul>
                 </section>
 
@@ -76,35 +59,36 @@
 
 
                 <!-- Add Comment -->
-                <h4 class="comment">Add Comment</h4>
-                <div class="margin-top-20"></div>
+                @if(Auth::user())
+                    <h4 class="comment">Добави коментар</h4>
+                    <div class="margin-top-20"></div>
 
-                <!-- Add Comment Form -->
-                <form id="add-comment" class="add-comment">
-                    <fieldset>
+                    <!-- Add Comment Form -->
+                    <form method="POST" action="/issues/{{$issue->id}}/comments" id="add-comment" class="add-comment">
+                        {{ csrf_field() }}
+                        <fieldset>
+                            @if ($errors->has('body'))
+                                <span class="help-block">
+                                <strong style="color: #ef5350">{{ $errors->first('body') }}</strong>
+                            </span>
+                            @endif
+                            <div>
+                                <label>Коментар: <span>*</span></label>
+                                <textarea name="body" cols="40" rows="3"></textarea>
+                            </div>
 
-                        <div>
-                            <label>Name:</label>
-                            <input type="text" value=""/>
-                        </div>
+                        </fieldset>
 
-                        <div>
-                            <label>Email: <span>*</span></label>
-                            <input type="text" value=""/>
-                        </div>
+                        <button href="#" type="submit" class="button color">Добави</button>
+                        <div class="clearfix"></div>
+                        <div class="margin-bottom-20"></div>
 
-                        <div>
-                            <label>Comment: <span>*</span></label>
-                            <textarea cols="40" rows="3"></textarea>
-                        </div>
-
-                    </fieldset>
-
-                    <a href="#" class="button color">Add Comment</a>
-                    <div class="clearfix"></div>
-                    <div class="margin-bottom-20"></div>
-
-                </form>
+                    </form>
+                @else
+                    <div class="notification notice closeable margin-bottom-40">
+                        <p><span>Регистрирайте се, преди да може да коментирате</span></p>
+                    </div>
+                @endif
 
             </div>
         </div>

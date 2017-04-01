@@ -17,5 +17,10 @@ Auth::routes();
 
 Route::get('/', 'PagesController@home');
 
+Route::post('issues/{id}/comments', 'IssuesController@storeComment');
 Route::resource('issues', 'IssuesController');
-;
+
+Route::get('test', function() {
+    $issue = App\Issue::where('id', 31)->first();
+    dd($issue->comments);
+});

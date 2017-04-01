@@ -113,4 +113,21 @@ class IssuesController extends Controller
             'issues' => $issues->paginate(5)
         ]);
     }
+
+    public function storeComment($issue_id, Request $request)
+    {
+        $this->validate($request, [
+            'body' => 'required|max:255'
+        ]);
+
+        $data = $request->all();
+
+        $data['issue_id'] = $issue_id;
+
+        Auth::user()->comments()->create($data);
+
+        flash('Успешно добавен коментар!', 'Вашият коментар бе успешно публикуван', 'success');
+
+        return redirect()->back();
+    }
 }
